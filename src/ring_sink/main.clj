@@ -2,10 +2,13 @@
   (:require [ring.adapter.jetty :as jetty]
             [taoensso.timbre :refer [log] :as timbre]
             [ring.middleware.params :refer [wrap-params]]
-            [ring.middleware.keyword-params :refer [wrap-keyword-params]]))
+            [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+            [clojure.data.json :as json]))
 
 (def config {:jetty {:port  3000
                      :join? false}})
+
+(def server (atom nil))
 
 (defn setup-logger!
   [{:keys [filename println?] :or {filename nil, println? true}}]
@@ -18,8 +21,8 @@
 (defn -app [request]
   (log-request request)
   {:status  200
-   :headers {"Content-Type" "text/html"}
-   :body  (:body request)})
+   :headers {"Content-Type" "application/json"}
+   :body    (-> request (update :body slurp) json/json-str)})
 
 (def app
   (-> -app
@@ -28,4 +31,8 @@
 
 (defn -main [& args]
   (setup-logger! {:filename "ring-sink.log" :println? true})
-  (jetty/run-jetty #'app (:jetty config)))
+  (reset! server (jetty/run-jetty #'app (:jetty config))))
+
+(comment
+  (.stop @server)
+  )
