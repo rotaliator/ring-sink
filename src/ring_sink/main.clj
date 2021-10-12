@@ -16,13 +16,14 @@
   (timbre/merge-config! {:appenders {:println {:enabled? println?}}}))
 
 (defn log-request [request]
-  (log :info (update request :body slurp)))
+  (log :info request))
 
 (defn -app [request]
-  (log-request request)
-  {:status  200
-   :headers {"Content-Type" "application/json"}
-   :body    (-> request (update :body slurp) json/json-str)})
+  (let [req-slurped (update request :body slurp)]
+    (log-request req-slurped)
+    {:status  200
+     :headers {"Content-Type" "application/json"}
+     :body    (-> req-slurped json/json-str)}))
 
 (def app
   (-> -app
