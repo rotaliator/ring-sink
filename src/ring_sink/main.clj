@@ -1,27 +1,33 @@
 (ns ring-sink.main
-  (:require [ring.adapter.jetty :as jetty]
+  (:require [clojure.java.io :as io]
+            [clojure.edn :as edn]
+            [ring.adapter.jetty :as jetty]
             [taoensso.timbre :refer [log] :as timbre]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [clojure.data.json :as json]))
 
-(def config {:jetty {:port  3000
-                     :join? false}})
+(def config (-> "config.edn" io/resource slurp edn/read-string))
 
-(def server (atom nil))
+
+(defonce server (atom nil))
 
 (defn setup-logger!
   [{:keys [filename println?] :or {filename nil, println? true}}]
-  (when filename (timbre/merge-config! {:appenders {:spit (timbre/spit-appender {:fname filename})}}))
+  (when filename (timbre/merge-config!
+                  {:appenders
+                   {:spit (timbre/spit-appender {:fname filename})}}))
   (timbre/merge-config! {:appenders {:println {:enabled? println?}}}))
 
 (defn log-request [request]
   (log :info request))
 
 (defn -app [request]
-  (let [req-slurped (update request :body slurp)]
+  (let [req-slurped (update request :body slurp)
+        req-method  (:request-method request)
+        resp-code   (get-in config [:response-codes req-method] 200)]
     (log-request req-slurped)
-    {:status  200
+    {:status  resp-code
      :headers {"Content-Type" "application/json"}
      :body    (-> req-slurped json/json-str)}))
 
@@ -30,10 +36,25 @@
       (wrap-keyword-params)
       (wrap-params)))
 
-(defn -main [& args]
-  (setup-logger! {:filename "ring-sink.log" :println? true})
+(defn start-server []
   (reset! server (jetty/run-jetty #'app (:jetty config))))
 
+(defn stop-server []
+  (.stop @server))
+
+(defn -main [& args]
+  (setup-logger! {:filename (:log-file config)
+                  :println? true})
+  (start-server)
+  (.addShutdownHook
+   (Runtime/getRuntime)
+   (Thread. stop-server)))
+
+
 (comment
-  (.stop @server)
+  (do ;;restart
+    (stop-server)
+    (Thread/sleep 500)
+    (start-server))
+
   )
