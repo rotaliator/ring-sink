@@ -4,4 +4,4 @@
  :response-codes {:get  200
                   :post 201
                   :put  204}
- :log-file       "ring-sink.log"}
+ :log-file       nil}

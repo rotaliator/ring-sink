@@ -1,0 +1,4 @@
+{:main         "ring-sink.main"
+ :aot          true
+ :target-image {:image-name "rotaliator/ring-sink"
+                :type       :docker}}

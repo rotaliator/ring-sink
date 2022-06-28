@@ -12,3 +12,4 @@ pom.xml.asc
 /.dir-locals.el
 
 ring-sink.log
+app.tar

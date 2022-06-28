@@ -5,7 +5,8 @@
             [taoensso.timbre :refer [log] :as timbre]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json])
+  (:gen-class))
 
 (def config (-> "config.edn" io/resource slurp edn/read-string))
 

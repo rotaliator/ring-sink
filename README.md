@@ -13,3 +13,8 @@ or
 ## building jar
 
 `clojure -T:build uberjar`
+
+
+## building docker image
+
+`clojure -T:jib`
