@@ -13,6 +13,8 @@
 
 (defonce server (atom nil))
 
+(defonce request-count (atom 0))
+
 (defn setup-logger!
   [{:keys [filename println?] :or {filename nil, println? true}}]
   (when filename (timbre/merge-config!
@@ -26,11 +28,14 @@
 (defn -app [request]
   (let [req-slurped (update request :body slurp)
         req-method  (:request-method request)
-        resp-code   (get-in config [:response-codes req-method] 200)]
+        resp-code   (get-in config [:response-codes req-method] 200)
+        resp-body   (-> req-slurped
+                        (assoc :request-count (swap! request-count inc))
+                        json/json-str)]
     (log-request req-slurped)
     {:status  resp-code
      :headers {"Content-Type" "application/json"}
-     :body    (-> req-slurped json/json-str)}))
+     :body resp-body}))
 
 (def app
   (-> -app
