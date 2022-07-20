@@ -23,6 +23,10 @@ or
 
 `JIB_CONFIG=jib-arm64.edn clojure -T:jib`
 
+## building multiplatform image with jib-cli
+
+`jib build --target rotaliator/ring-sink`
+
 ## running from docker image
 
 `docker run --rm -p 3000:3000 rotaliator/ring-sink`

@@ -7,8 +7,8 @@ from:
   image: "eclipse-temurin:11-jre"
   # set platforms for multi architecture builds, defaults to `linux/amd64`
   platforms:
-#    - architecture: "arm64"
-#      os: "linux"
+    - architecture: "arm64"
+      os: "linux"
     - architecture: "amd64"
       os: "linux"
 creationTime: 2022-07-20T22:22:22+00:00
