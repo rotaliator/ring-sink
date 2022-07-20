@@ -1,0 +1,33 @@
+# required apiVersion and kind, for compatibility over versions of the cli
+apiVersion: jib/v1alpha1
+kind: BuildFile
+
+# full base image specification with detail for manifest lists or multiple architectures
+from:
+  image: "eclipse-temurin:11-jre"
+  # set platforms for multi architecture builds, defaults to `linux/amd64`
+  platforms:
+#    - architecture: "arm64"
+#      os: "linux"
+    - architecture: "amd64"
+      os: "linux"
+creationTime: 2022-07-20T22:22:22+00:00
+
+format: Docker
+
+exposedPorts:
+  - "3000"
+
+workingDirectory: "/app"
+
+entrypoint:
+ - "java"
+ - "-jar"
+ - "ring-sink.jar"
+
+layers:
+  entries:
+    - name: "app"
+      files:
+        - src: "target/ring-sink-1.0.7-standalone.jar"
+          dest: "/app/ring-sink.jar"
