@@ -25,6 +25,9 @@ or
 
 ## building multiplatform image with jib-cli
 
+
+`bb jib-edn2yaml.clj`
+
 `jib build --target rotaliator/ring-sink`
 
 ## running from docker image
