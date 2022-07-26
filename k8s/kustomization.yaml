@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  namespace: ring-sink
+
+namespace: ring-sink
+
+resources:
+  - namespace.yaml
+  - ring-sink-app.yaml
+  - ring-sink-ingress.yaml
+  - ring-sink-service-cluster-ip.yaml

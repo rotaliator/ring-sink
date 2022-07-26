@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ring-sink
+spec:
+  rules:
+  - host: ring-sink.130.162.222.5.nip.io
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: ring-sink-clusterip
+              port:
+                number: 8080

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ring-sink-deployment
+  labels:
+    app: ring-sink
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ring-sink
+  template:
+    metadata:
+      labels:
+        app: ring-sink
+    spec:
+      containers:
+      - name: ring-sink-app
+        image: rotaliator/ring-sink
+        ports:
+        - containerPort: 3000
