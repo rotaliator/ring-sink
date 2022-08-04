@@ -1,7 +1,0 @@
-{:main         "ring-sink.main"
- :aot          true
- :target-image {:image-name "rotaliator/ring-sink"
-                :tag        "arm64"
-                :type       :docker}
- :base-image   {:image-name "arm64v8/eclipse-temurin:18-jre" #_"eclipse-temurin:11-jre-jammy"
-                :type       :registry}}

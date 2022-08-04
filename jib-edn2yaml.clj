@@ -2,17 +2,8 @@
 (require '[clojure.java.io :as io])
 (require '[clojure.pprint :refer [pprint]])
 (require '[clojure.edn :as edn])
+(require '[babashka.cli :as cli])
 
-(comment
-  (->> "jib.yaml"
-       (io/file)
-       (io/reader)
-       (yaml/parse-stream)
-       (pprint)
-       (with-out-str)
-       (spit "jib-from-yaml.edn"))
-
-  )
 
 (defn get-target-jar-path [dir pattern]
   (some->> (.listFiles (io/file dir))
@@ -24,8 +15,20 @@
                      'app-jar (fn [[dir pattern]]
                                 (get-target-jar-path dir (re-pattern pattern)))})
 
-(->> "jib.edn"
-     (slurp)
-     (edn/read-string {:readers custom-readers})
-     (yaml/generate-string)
-     (spit "jib.yaml"))
+
+(defn edn2yaml [edn-file yaml-file]
+  (->> edn-file
+       (slurp)
+       (edn/read-string {:readers custom-readers})
+       (yaml/generate-string)
+       (spit yaml-file)))
+
+
+(defn -main [& args]
+  (let [arguments (first (:args (cli/parse-args args)))]
+    (if (= 2 (count arguments))
+      (apply edn2yaml arguments)
+      (println "Usage: file.edn file.yaml"))))
+
+(when (= *file* (System/getProperty "babashka.file"))
+  (-main *command-line-args*))

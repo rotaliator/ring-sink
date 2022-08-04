@@ -14,19 +14,9 @@ or
 
 `clojure -T:build uberjar`
 
-
-## building docker image
-
-`clojure -T:jib`
-
-## building docker image for arm64
-
-`JIB_CONFIG=jib-arm64.edn clojure -T:jib`
-
 ## building multiplatform image with jib-cli
 
-
-`bb jib-edn2yaml.clj`
+`bb jib-edn2yaml.clj jib.edn jib.yaml`
 
 `jib build --target rotaliator/ring-sink`
 
