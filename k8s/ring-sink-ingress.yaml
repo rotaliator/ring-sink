@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   name: ring-sink
 spec:
+  externalTrafficPolicy: Local
   rules:
   - host: ring-sink.130.162.222.5.nip.io
     http:
